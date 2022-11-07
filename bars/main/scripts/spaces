@@ -1,0 +1,99 @@
+#!/bin/bash
+
+# outputs 1, if occupied, 0 if not
+isOccupied() {
+    excluded="Eww - main-wspaces|Eww - auxiliary-wspaces|Eww - sysinfo|Eww - clock-date-weather|Eww - clock-date|Eww - weather"
+    if [[ $(wmctrl -l | grep -v -E "$excluded" | awk -F " " {'print $2'} | sort | uniq | grep $1) ]]; then
+        echo 1
+    else 
+        echo 0
+    fi
+}
+
+# outpus 1 if focused, 0 if not
+isFocused() {
+    if [[ $(tail -n 1 $HOME/.cache/awesome/tag.log | grep $1) ]]; then
+        echo 1
+    else
+        echo 0
+    fi
+}
+
+# outputs the icons
+getIcon() {
+    if [[ $1 == 1 ]]; then
+        # focused
+        echo ""
+    elif [[ $1 == 0 && $2 == 1 ]]; then
+        # occupied, unfocused
+        echo ""
+    elif [[ $1 == 0 && $2 == 0 ]]; then
+        # not occupied, not focused
+        echo ""
+    fi
+}
+
+workspaces () {
+   
+    # orientations 
+    o_ex="h" 
+    o_in="h"
+    
+    # spacing
+    s_ex=1
+    s_in=10
+    s_in_u=10
+    s_in_l=10
+
+    # horizontal alignment (start|center|end)
+    h_ex="start"
+    h_in="center"
+
+    # vertical alignment
+    v_ex="center"
+    v_in="center"
+
+    # prefix, just so classes won't start with a number
+    p="w"
+
+    # workspaces (wmctrl variant) s[creen]<id>w[orkspace]<id>)
+    s1w1=0
+    s1w2=1
+    s1w3=2
+    s1w4=3
+    # s2w1=4
+    # s2w2=5
+    # s2w3=6
+    # s2w4=7
+
+    yuck=$(
+cat << EOF
+(box :class "spaces-main internal-container" 
+        :orientation "$o_ex" 
+        :halign "$h_ex" 
+        :valign "$v_ex" 
+        :space-evenly "false" 
+        :spacing "$s_ex"
+    (box :class "spaces-left" 
+            :orientation "$o_in" 
+            :halign "$h_in" 
+            :valign "$v_in" 
+            :space-evenly "false" 
+            :spacing "$s_in" 
+            (box :class "upper"
+                    :spacing "$s_in_u"
+                (button :onclick "coproc ( echo $'$s1w1' >> $HOME/.cache/awesome/tag.log; wmctrl -s $s1w1 )" :class "$p$(isOccupied $s1w1)$(isFocused $s1w1)" "$(getIcon $(isFocused $s1w1) $(isOccupied $s1w1))") 
+                (button :onclick "coproc ( echo $'$s1w2' >> $HOME/.cache/awesome/tag.log; wmctrl -s $s1w2 )" :class "$p$(isOccupied $s1w2)$(isFocused $s1w2)" "$(getIcon $(isFocused $s1w2) $(isOccupied $s1w2))"))
+            (box :class "lower"
+                    :spacing "$s_in_l"
+                (button :onclick "coproc ( echo $'$s1w3' >> $HOME/.cache/awesome/tag.log; wmctrl -s $s1w3 )" :class "$p$(isOccupied $s1w3)$(isFocused $s1w3)" "$(getIcon $(isFocused $s1w3) $(isOccupied $s1w3))")
+                (button :onclick "coproc ( echo $'$s1w4' >> $HOME/.cache/awesome/tag.log; wmctrl -s $s1w4 )" :class "$p$(isOccupied $s1w4)$(isFocused $s1w4)" "$(getIcon $(isFocused $s1w4) $(isOccupied $s1w4))"))))
+EOF
+)
+    echo $yuck
+}
+
+workspaces
+tail -n 1 -f $HOME/.cache/awesome/tag.log | while read -r _ ; do
+workspaces
+done

@@ -1,0 +1,230 @@
+; ------------ variables ------------ ;
+
+; -- system information variables
+(defpoll cpu :interval "1s" 'scripts/sysinfo -c')
+(defpoll mem :interval "1s" 'scripts/sysinfo -m')
+(defpoll sda :interval "1s" 'scripts/sysinfo -d')
+
+; -- time variables
+(defpoll date :interval "1s" 'date +\"%A, %d %B %Y\"')
+(defpoll time :interval "1s" 'date +\"%H:%M:%S\"')
+
+; -- weather variables
+(defpoll wicon :interval "1s" 'scripts/weather --icon')         
+(defpoll wtemp :interval "1s" 'scripts/weather --temp')         
+(defpoll wcolour :interval "1s" 'scripts/weather --colour')         
+
+; ------------ windows ------------ ;
+
+; -- window for workspaces widget 
+(defwindow main-wspaces
+    :monitor 0
+    :exclusive true
+    :geometry (geometry :x "8px"
+                        :y "8px"
+                        :width "0%"
+                        :height "48px"
+                        :anchor "top left")
+  :stacking "bg"
+  :reserve (struts :distance "56px"
+                    :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+ (workspaces))
+
+; -- window for info widget
+(defwindow sysinfo
+    :monitor 0
+    :geometry (geometry :x "160px"
+                        :y "8px"
+                        :width "16%"
+                        :height "48px"
+                        :anchor "top left")
+  :reserve (struts :distance "56px"
+                    :side "top")
+    :stacking "bg"
+    :wm-ignore false
+  (info))
+
+; -- window for clock-date-weather widget
+(defwindow clock-date
+    :monitor 0
+    :exclusive true
+    :geometry (geometry :x "-8px"
+                        :y "8px"
+                        :width "0%"
+                        :height "48px"
+                        :anchor "top right")
+  :reserve (struts :distance "56px"
+                    :side "top")
+  :stacking "bg"
+  :windowtype "dock"
+  :wm-ignore false
+  (clock-date-dock))
+
+(defwindow weather
+    :monitor 0
+    :exclusive true
+    :geometry (geometry :x "-260px"
+                        :y "8px"
+                        :width "0%"
+                        :height "48px"
+                        :anchor "top right")
+  :reserve (struts :distance "56px"
+                    :side "top")
+  :stacking "bg"
+  :windowtype "dock"
+  :wm-ignore false
+  (weather-dock))
+  
+; -- window for popup calendar widget
+; ---- ! for now unfuntional
+(defwindow calendar
+    :monitor 0
+    :geometry (geometry :x "1422px"
+                        :y "74px"
+                        :width "25%"
+                        :height "20%"
+                        :anchor "top left")
+    :reserve (struts :distance "56px"
+                      :side "top")
+    :stacking "fg"
+    :wm-ignore false
+  (calendardock))
+
+; ------------ widgets ------------ ;
+
+; -- workspace widget, depends on .yuck generating script 
+; ---- (.config/eww/bars/main/spaces)
+(defwidget workspaces []
+  (box :class "workspaces containers"
+        :orientation "h"
+        :space-evenly false
+        :halign "start"
+        :valign "center"
+    (literal :content spaces)))
+(deflisten spaces "scripts/spaces")
+
+; -- system info widget
+; ---- (.config/eww/bars/main/sysinfo)
+(defwidget info []
+  (box :class "resources containers"
+        (centerbox :orientation "h"
+          (box :class "resource-div"
+                :orientation "h"
+                :valign "center"
+                :halign "center"
+                :space-evenly false
+            (label :class "resource-text"
+                    :orientation "h"
+                    :valign "center"
+                    :halign "center"
+                    :text " ${cpu}%"))
+          (box :class "resource-div"
+                :orientation "h"
+                :valign "center"
+                :halign "center"
+                :space-evenly false
+              (label :class "resource-text"
+                      :valign "center"
+                      :halign "center"
+                      :text  " ${mem}%"))
+          (box :class "resource-div"
+                :orientation "h"
+                :valign "center"
+                :halign "center"
+                :space-evenly false
+              (label :class "resource-text"
+                      :valign "center"
+                      :halign "center"
+                      :text " ${sda}%")))))
+
+; ready snippet for laptop
+;(box :class "resource-div"
+;      :orientation "h"
+;      :valign "center"
+;      :halign "center"
+;      :space-evenly false)
+;  (label :class "resource-text"
+;          :valign "center"
+;          :halign "center"
+;          :text "${bat}%"))
+;(defpoll bat :interval "1s" 'scripts/sysinfo -b')
+
+; -- widget presenting a wide variety of information i.e.
+; ---- a. basic textclock
+; ---- b. date, without current year for aesthetics and so it takes less space
+; ---- c. weather i.e. temperature and weather in the form of an icon
+; ------ (.config/eww/bars/main/weather)
+(defwidget clock-date-weather-dock []
+  (box :class "clock-date-weather containers"
+    (box :class "datebox"
+          :orientation "v"
+          :spacing 0
+          :space-evenly false
+          :valign "center"
+          :halign "start"
+          :vexpand false
+          :hexpand false
+        (button :class "time"
+                :halign "start"
+                :wrap true
+                :onclick 'scripts/toggle_calendar'
+                time)
+        (button :class "date"
+                :wrap true
+                :onclick 'scripts/toggle_calendar'
+                date))
+    (box :class "weatherbox"
+          :orientation "h"
+          :spacing 0
+          :space-evenly false
+          :halign "end"
+          :vexpand false
+          :hexpand false
+        (label :class "weathertemp"
+                :text "${wtemp}°C  ")
+        (label :class "weathericon"
+                :style "color: ${wcolour};"
+                :text "${wicon}"))))
+
+; -- version of clock-date-weather-dock without weather
+(defwidget clock-date-dock []
+  (box :class "clock-date containers"
+    (box :class "datebox"
+          :orientation "v"
+          :spacing 0
+          :space-evenly false
+          :valign "center"
+          :halign "start"
+          :vexpand false
+          :hexpand false
+        (button :class "time"
+                :halign "start"
+                :wrap true
+                time)
+        (button :class "date"
+                :halign "start"
+                :wrap true
+                date))))
+
+(defwidget weather-dock []
+  (box :class "clock-date-weather containers"
+    (box :class "weatherbox"
+          :orientation "h"
+          :spacing 0
+          :space-evenly false
+          :halign "center"
+          :vexpand false
+          :hexpand true
+        (label :class "weathertemp"
+                :halign "start"
+                :text "${wtemp}°C")
+        (label :class "weathericon"
+                :style "color: ${wcolour};"
+                :text "${wicon}"))))
+
+; -- protype of a popup widget, which appears after clicking the textclock or the date
+; ---- ! for now unfuntional
+(defwidget calendardock []
+  (box :class "calendardock containers"))

@@ -1,0 +1,74 @@
+; ------------ variables ------------ ;
+
+; -- time variables
+(defpoll date :interval "1s" 'date +\"%A, %d %B %Y\"')
+(defpoll time :interval "1s" 'date +\"%H:%M:%S\"')
+
+; ------------ windows ------------ ;
+
+; -- window for workspaces widget 
+(defwindow auxiliary-wspaces
+    :monitor 1
+    :exclusive true
+    :geometry (geometry :x "-8px"
+                        :y "8px"
+                        :width "0%"
+                        :height "48px"
+                        :anchor "top right")
+  :stacking "bg"
+  :reserve (struts :distance "56px"
+                    :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+ (workspaces))
+
+; -- window for clock-date-dock widget
+(defwindow clock-date
+    :monitor 1
+    :exclusive true
+    :geometry (geometry :x "8px"
+                        :y "8px"
+                        :width "0%"
+                        :height "48px"
+                        :anchor "top left")
+  :stacking "bg"
+  :reserve (struts :distance "56px"
+                    :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+  :hexpand false
+  :vexpand false
+  (clock-date-dock))
+
+; ------------ widgets ------------ ;
+
+; -- workspace widget, depends on .yuck generating script 
+; ---- (.config/eww/bars/main/spaces)
+(defwidget workspaces []
+  (box :class "workspaces containers"
+        :orientation "h"
+        :space-evenly false
+        :halign "center"
+        :valign "center"
+    (literal :content spaces)))
+(deflisten spaces "scripts/spaces")
+
+; -- widget providing both time and date
+(defwidget clock-date-dock []
+  (box :class "clock-date containers"
+    (box :class "datebox"
+          :orientation "v"
+          :spacing 0
+          :space-evenly false
+          :valign "center"
+          :halign "start"
+          :vexpand false
+          :hexpand false
+        (button :class "time"
+                :halign "start"
+                :wrap true
+                time)
+        (button :class "date"
+                :halign "start"
+                :wrap true
+                date))))

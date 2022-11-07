@@ -1,0 +1,4 @@
+#!/bin/bash
+
+$HOME/.local/eww/target/release/eww -c $HOME/.config/eww/bars/main open --toggle calendar
+

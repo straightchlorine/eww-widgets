@@ -1,0 +1,80 @@
+$background: #0c0d16;
+$foreground: #f5f6f6;
+
+*{
+    all: unset;
+
+    font-family: "Noto Sans Mono";
+    font-weight: normal;
+}
+
+.containers {
+    background-color: $background;
+    color: $foreground;
+
+    border-style: solid;
+}
+
+// workspace widget
+.workspaces {
+    background-color: $background;
+    color: $foreground;
+    padding: 0.95rem 1.5rem 0.95rem 1.3rem;
+    font-size: 1.2rem;
+}
+
+.w00, .w10, .w01, .w11 {
+    color: $foreground;
+}
+
+// system information widget
+.resources {
+    background-color: $background;
+
+    padding: 0.3rem;
+}
+
+.resource-div {
+    padding: 0rem 0.4rem 0rem;
+}
+
+.resource-text {
+    color: $foreground;
+}
+
+// components of clock-date widget
+.datebox {
+    background-color: $background;
+    color: $foreground;
+
+    padding: 0rem 0.4rem 0rem;
+}
+
+.clock-date {
+    padding: 0.35rem;
+}
+
+.time {
+    font-size: 1rem;
+}
+
+.date {
+    font-size: 0.8rem;
+}
+
+// components of weather widget
+.weatherbox {
+    background-color: $background;
+    color: $foreground;
+    padding: 0.3rem 2.5rem 0.3rem 1.5rem;
+}
+
+.weathericon {
+    font-size: 1.95rem;
+    font-weight: normal;
+}
+
+.weathertemp {
+    font-size: 1.2rem;
+    padding-right: 0.9rem;
+}

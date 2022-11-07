@@ -1,0 +1,40 @@
+#!/bin/bash
+
+cpu() {
+    mpstat | awk {'print $4'} | sed -n '4p'
+}
+
+memory() {
+    printf "%.2f\n" $(free -m | grep Mem | awk '{print ($3/$2)*100}')
+}
+
+disk() {
+    df -h / | awk '{print $5}' | tail -n 1 | sed 's/%//g'
+}
+
+battery() {
+    bat=$(ls /sys/class/power_supply | grep BAT | head -n 1)
+    if [[ $bat ]]; then
+        cat /sys/class/power_supply/$bat/capacity
+    fi
+}
+
+brightness() {
+    if [[ $(ls /sys/class/backlight | head -n 1) ]]; then
+        light -G
+    fi
+}
+
+if [[ "$1" == "-c" || "$1" == "--cpu" ]]; then
+    cpu
+elif [[ "$1" == "-m" || "$1" == "--memory" ]]; then
+    memory
+elif [[ "$1" == "-c" || "$1" == "--cpu" ]]; then 
+    cpu
+elif [[ "$1" == "-d" || "$1" == "--disk" ]]; then
+    disk
+elif [[ "$1" == "-b" || "$1" == "--battery" ]]; then
+    battery
+elif [[ "$1" == "-l" || "$1" == "--brightness" ]]; then
+    brightness
+fi
