@@ -15,7 +15,27 @@ disk() {
 battery() {
     bat=$(ls /sys/class/power_supply | grep BAT | head -n 1)
     if [[ $bat ]]; then
-        cat /sys/class/power_supply/$bat/capacity
+      percentage=$(cat /sys/class/power_supply/$bat/capacity)
+      if [ $percentage -le 5 ]; then
+        icon=""
+        echo "${icon}  ${percentage}%"
+      fi
+      if [ $percentage -gt 5 ] && [ $percentage -le 45 ]; then
+        icon=""
+        echo "${icon}  ${percentage}%"
+      fi
+      if [ $percentage -gt 45 ] && [ $percentage -le 65 ]; then
+        icon=""
+        echo "${icon}  ${percentage}%"
+      fi
+      if [ $percentage -gt 65 ] && [ $percentage -le 85 ]; then
+        icon=""
+        echo "${icon}  ${percentage}%"
+      fi
+      if [ $percentage -gt 85 ] && [ $percentage -le 100 ]; then
+        icon=""
+        echo "${icon}  ${percentage}%"
+      fi
     fi
 }
 
@@ -29,7 +49,7 @@ if [[ "$1" == "-c" || "$1" == "--cpu" ]]; then
     cpu
 elif [[ "$1" == "-m" || "$1" == "--memory" ]]; then
     memory
-elif [[ "$1" == "-c" || "$1" == "--cpu" ]]; then 
+elif [[ "$1" == "-c" || "$1" == "--cpu" ]]; then
     cpu
 elif [[ "$1" == "-d" || "$1" == "--disk" ]]; then
     disk

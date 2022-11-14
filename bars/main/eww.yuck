@@ -4,19 +4,20 @@
 (defpoll cpu :interval "1s" 'scripts/sysinfo -c')
 (defpoll mem :interval "1s" 'scripts/sysinfo -m')
 (defpoll sda :interval "1s" 'scripts/sysinfo -d')
+(defpoll bat :interval "1s" 'scripts/sysinfo -b')
 
 ; -- time variables
 (defpoll date :interval "1s" 'date +\"%A, %d %B %Y\"')
 (defpoll time :interval "1s" 'date +\"%H:%M:%S\"')
 
 ; -- weather variables
-(defpoll wicon :interval "1s" 'scripts/weather --icon')         
-(defpoll wtemp :interval "1s" 'scripts/weather --temp')         
-(defpoll wcolour :interval "1s" 'scripts/weather --colour')         
+(defpoll wicon :interval "1s" 'scripts/weather --icon')
+(defpoll wtemp :interval "1s" 'scripts/weather --temp')
+(defpoll wcolour :interval "1s" 'scripts/weather --colour')
 
 ; ------------ windows ------------ ;
 
-; -- window for workspaces widget 
+; -- window for workspaces widget
 (defwindow main-wspaces
     :monitor 0
     :exclusive true
@@ -37,7 +38,7 @@
     :monitor 0
     :geometry (geometry :x "160px"
                         :y "8px"
-                        :width "16%"
+                        :width "22%"
                         :height "48px"
                         :anchor "top left")
   :reserve (struts :distance "56px"
@@ -76,7 +77,7 @@
   :windowtype "dock"
   :wm-ignore false
   (weather-dock))
-  
+
 ; -- window for popup calendar widget
 ; ---- ! for now unfuntional
 (defwindow calendar
@@ -94,7 +95,7 @@
 
 ; ------------ widgets ------------ ;
 
-; -- workspace widget, depends on .yuck generating script 
+; -- workspace widget, depends on .yuck generating script
 ; ---- (.config/eww/bars/main/spaces)
 (defwidget workspaces []
   (box :class "workspaces containers"
@@ -109,12 +110,14 @@
 ; ---- (.config/eww/bars/main/sysinfo)
 (defwidget info []
   (box :class "resources containers"
-        (centerbox :orientation "h"
+        (box :orientation "h"
           (box :class "resource-div"
                 :orientation "h"
                 :valign "center"
                 :halign "center"
                 :space-evenly false
+                :hexpand true
+                :width "10%"
             (label :class "resource-text"
                     :orientation "h"
                     :valign "center"
@@ -125,6 +128,7 @@
                 :valign "center"
                 :halign "center"
                 :space-evenly false
+                :width "5%"
               (label :class "resource-text"
                       :valign "center"
                       :halign "center"
@@ -134,22 +138,21 @@
                 :valign "center"
                 :halign "center"
                 :space-evenly false
+                :width "5%"
               (label :class "resource-text"
                       :valign "center"
                       :halign "center"
-                      :text " ${sda}%")))))
-
-; ready snippet for laptop
-;(box :class "resource-div"
-;      :orientation "h"
-;      :valign "center"
-;      :halign "center"
-;      :space-evenly false)
-;  (label :class "resource-text"
-;          :valign "center"
-;          :halign "center"
-;          :text "${bat}%"))
-;(defpoll bat :interval "1s" 'scripts/sysinfo -b')
+                      :text " ${sda}%"))
+          (box :class "resource-div"
+                :orientation "h"
+                :valign "center"
+                :halign "center"
+                :space-evenly false
+                :width "5%"
+            (label :class "resource-text"
+                    :valign "center"
+                    :halign "center"
+                    :text "${bat}")))))
 
 ; -- widget presenting a wide variety of information i.e.
 ; ---- a. basic textclock
