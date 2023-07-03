@@ -119,7 +119,7 @@
                     :orientation "h"
                     :valign "center"
                     :halign "center"
-                    :text " ${cpu}%"))
+                    :text " ${cpu}%"))
           (box :class "resource-div"
                 :orientation "h"
                 :valign "center"

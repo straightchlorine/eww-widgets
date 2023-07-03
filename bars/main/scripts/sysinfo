@@ -9,7 +9,7 @@ memory() {
 }
 
 disk() {
-    df -h / | awk '{print $5}' | tail -n 1 | sed 's/%//g'
+    df -h /home | awk '{print $5}' | tail -n 1 | sed 's/%//g'
 }
 
 battery() {

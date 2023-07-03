@@ -3,7 +3,7 @@
 # outputs 1, if occupied, 0 if not
 isOccupied() {
     excluded="Eww - main-wspaces|Eww - auxiliary-wspaces|Eww - sysinfo|Eww - clock-date-weather|Eww - clock-date|Eww - weather"
-    if [[ $(wmctrl -l | grep -v -E "$excluded" | awk -F " " {'print $2'} | sort | uniq | grep $1) ]]; then
+    if [[ $(wmctrl -l | grep -v -E "Eww - *" | awk -F " " {'print $2'} | sort | uniq | grep $1) ]]; then
         echo 1
     else 
         echo 0
@@ -29,7 +29,7 @@ getIcon() {
         echo ""
     elif [[ $1 == 0 && $2 == 0 ]]; then
         # not occupied, not focused
-        echo ""
+        echo "󰢤"
     fi
 }
 
